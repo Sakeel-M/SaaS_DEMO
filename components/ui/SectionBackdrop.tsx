@@ -291,7 +291,7 @@ function PathsBackdrop({ p }: { p: number }) {
           transition: "top 0.4s ease-out",
         }}
       >
-        // LEARN
+        {"// LEARN"}
       </div>
       <div
         className="absolute eyebrow text-[var(--silver)]/25"
@@ -302,7 +302,7 @@ function PathsBackdrop({ p }: { p: number }) {
           transition: "top 0.4s ease-out",
         }}
       >
-        // BUILD
+        {"// BUILD"}
       </div>
 
       {/* Floating decorative tags — right side, parallax down */}
