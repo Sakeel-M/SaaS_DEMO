@@ -287,6 +287,12 @@ body {
   }
 }
 
+/* ─── Starfield twinkle (EditorialSpace backdrop) ────── */
+@keyframes star-twinkle {
+  0%, 100% { opacity: var(--star-opacity, 0.4); transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.4); }
+}
+
 /* ─── Section illustrations ──────────────────────────── */
 .si-root {
   display: inline-block;
@@ -340,8 +346,13 @@ body {
   filter: brightness(0) invert(1);
 }
 .logo-on-dark {
-  /* Keep red square as-is; turn the dark "SANDHAI" + tagline into silver. */
   filter: drop-shadow(0 0 0 transparent);
+}
+/* On a pure black nav: invert the lightness, then hue-rotate back so the
+   red square stays roughly red while the dark "SANDHAI" word + tagline
+   read as white. */
+.logo-on-black {
+  filter: invert(1) hue-rotate(180deg) saturate(1.4);
 }
 
 /* Lenis baseline */

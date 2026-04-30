@@ -17,10 +17,19 @@ export default function TopNav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    // Flip "scrolled" once the user is past ~85% of the hero so the nav
+    // bg becomes solid black only after the hero leaves the viewport.
+    const onScroll = () => {
+      const threshold = window.innerHeight * 0.85;
+      setScrolled(window.scrollY > threshold);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -49,20 +58,29 @@ export default function TopNav() {
     >
       <div className="pad-x">
         <div
-          className={`max-page flex items-end justify-between rounded-full transition-all duration-300 ${
-            scrolled
-              ? "frosted py-16 px-5"
-              : "py-14 px-1"
-          }`}
-          style={{ paddingBottom: scrolled ? "1.25rem" : "1.5rem" }}
+          className="max-page flex items-end justify-between rounded-full transition-all duration-300 py-14 px-5"
+          style={{
+            paddingBottom: scrolled ? "1.25rem" : "1.5rem",
+            background: scrolled ? "#000000" : "transparent",
+            border: scrolled
+              ? "1px solid rgba(255,255,255,0.06)"
+              : "1px solid transparent",
+            boxShadow: scrolled
+              ? "0 18px 42px -16px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04)"
+              : "none",
+          }}
         >
           <a
             href="#intro"
-            className="flex items-center group min-w-0 bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-1 shadow-lg shadow-black/30"
+            className="flex items-center group min-w-0"
             aria-label="SaaS Sandhai home"
             style={{ marginBottom: "-0.25rem" }}
           >
-            <Logo height={scrolled ? 26 : 30} priority />
+            <Logo
+              height={scrolled ? 26 : 30}
+              priority
+              className="logo-on-black"
+            />
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
