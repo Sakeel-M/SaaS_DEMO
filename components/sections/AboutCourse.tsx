@@ -5,9 +5,9 @@ import { Check, ArrowUpRight, Play } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 
 const HIGHLIGHTS = [
-  "8 weeks · 64 hands-on lessons",
-  "Build real SaaS with Claude — no boilerplate",
-  "Live cohort calls, every week",
+  "2-day intensive · ship a working product",
+  "Build with Claude, no boilerplate, no theory dumps",
+  "Live walkthrough + hands-on labs",
   "Auto-listing on Sandhai when you ship",
   "Lifetime access + private maker community",
 ];
@@ -92,21 +92,23 @@ export default function AboutCourse() {
           {/* COPY — right */}
           <div className="lg:col-span-6">
             <Reveal as="up">
-              <p className="eyebrow mb-5">ABOUT THE COURSE</p>
+              <p className="eyebrow !text-[var(--red-glow)] mb-5">
+                STRUGGLING TO CREATE A PRODUCT?
+              </p>
             </Reveal>
             <Reveal as="up" delay={120}>
               <h2 className="display-md mb-6">
-                <span className="block text-gradient-silver">Build SaaS</span>
-                <span className="block text-gradient-silver">with Claude.</span>
-                <span className="block text-gradient-red">In 8 weeks.</span>
+                <span className="block text-gradient-silver">Build and ship</span>
+                <span className="block text-gradient-silver">a product</span>
+                <span className="block text-gradient-red">in 2 days.</span>
               </h2>
             </Reveal>
             <Reveal as="up" delay={220}>
               <p className="body-lg max-w-md mb-8">
-                A hands-on, beginner-first track that takes you from zero
-                code to a SaaS in production. Every lesson ends with you
-                shipping something real. Every week ends with feedback from
-                the community.
+                A 2-day intensive that takes you from a blank page to a SaaS
+                live on Sandhai. Built around Claude, your unfair advantage.
+                You write zero boilerplate. You ship something real by the end
+                of day two.
               </p>
             </Reveal>
 

@@ -1,10 +1,9 @@
 import Hero from "@/components/sections/Hero";
 import EditorialSpace from "@/components/sections/EditorialSpace";
 import NewReleases from "@/components/sections/NewReleases";
-import TrendOfTheWeek from "@/components/sections/TrendOfTheWeek";
+import AboutCourse from "@/components/sections/AboutCourse";
 import TopDeals from "@/components/sections/TopDeals";
 import HowItWorks from "@/components/sections/HowItWorks";
-import AboutCourse from "@/components/sections/AboutCourse";
 import FeaturesGrid from "@/components/sections/FeaturesGrid";
 import Pricing from "@/components/sections/Pricing";
 import Testimonials from "@/components/sections/Testimonials";
@@ -16,11 +15,10 @@ export default function HomePage() {
     <>
       <Hero />
       <NewReleases />
-      <TrendOfTheWeek />
+      <AboutCourse />
       <TopDeals />
       <EditorialSpace />
       <HowItWorks />
-      <AboutCourse />
       <FeaturesGrid />
       <Pricing />
       <Testimonials />
