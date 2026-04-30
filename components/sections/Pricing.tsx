@@ -6,8 +6,8 @@ import Reveal from "@/components/ui/Reveal";
 const COURSE = {
   name: "The Course",
   badge: "FOR LEARNERS",
-  price: "₹19,999",
-  cadence: "one-time · lifetime access",
+  price: "₹4,999",
+  cadence: "+ GST · one-time · lifetime access",
   cta: "ENROLL NOW",
   features: [
     "8 weeks · 64 hands-on lessons",
