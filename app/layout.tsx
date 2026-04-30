@@ -48,6 +48,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${display.variable} ${mono.variable} ${serif.variable}`}>
+      <head>
+        {/* Preconnect to CloudFront so the hero video TLS handshake starts
+            in parallel with HTML parsing — saves ~200-400ms on first paint. */}
+        <link
+          rel="preconnect"
+          href="https://d8j0ntlcm91z4.cloudfront.net"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://d8j0ntlcm91z4.cloudfront.net"
+        />
+        {/* Tell the browser to start fetching the hero video at high priority,
+            before it parses the React tree that mounts the <video> element. */}
+        <link
+          rel="preload"
+          as="video"
+          href="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
+          // @ts-expect-error: fetchPriority is valid HTML5 but not yet typed in React 19
+          fetchpriority="high"
+        />
+      </head>
       <body>
         <SmoothScrollProvider>
           <AmbientBackdrop />

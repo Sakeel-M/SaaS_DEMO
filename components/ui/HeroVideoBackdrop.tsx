@@ -37,6 +37,11 @@ export default function HeroVideoBackdrop() {
     const v = videoRef.current;
     if (!v) return;
 
+    // Kick the network fetch & decode pipeline as early as possible.
+    try {
+      v.load();
+    } catch {/* noop */}
+
     const tryPlay = () => {
       const p = v.play();
       if (p && typeof p.catch === "function") {
@@ -137,30 +142,36 @@ export default function HeroVideoBackdrop() {
       >
         <video
           ref={videoRef}
+          src={VIDEO_SRC}
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
           crossOrigin="anonymous"
+          // @ts-expect-error fetchPriority is valid HTML5 but not yet typed in React 19
+          fetchpriority="high"
+          onLoadedMetadata={() => setLoaded(true)}
           onLoadedData={() => setLoaded(true)}
           onCanPlay={() => setLoaded(true)}
           onPlaying={() => setLoaded(true)}
           onError={() => setErrored(true)}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: "brightness(1.35) saturate(1.15) contrast(1.05)" }}
-        >
-          <source src={VIDEO_SRC} type="video/mp4" />
-        </video>
-      </div>
-
-      {/* Solid brand fill until first frame paints */}
-      {!loaded && !errored && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "#1a0a0d" }}
         />
-      )}
+
+        {/* Cinematic fallback that mirrors the video's color palette so the
+            transition into the first frame is barely noticeable. */}
+        {!loaded && !errored && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 60%, #4a1a14 0%, #2a0d10 40%, #100608 70%, #050203 100%)",
+            }}
+          />
+        )}
+      </div>
 
       {/* If the video errors completely, show a tasteful gradient instead */}
       {errored && (
