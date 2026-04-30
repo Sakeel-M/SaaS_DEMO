@@ -10,12 +10,8 @@ const COURSE = {
   cadence: "+ GST · one-time · lifetime access",
   cta: "ENROLL NOW",
   features: [
-    "8 weeks · 64 hands-on lessons",
+    "Ready templates to build any product",
     "Build with Claude. Zero boilerplate",
-    "Live cohort calls every week",
-    "Private maker community",
-    "Auto-listing on Sandhai when you ship",
-    "Certificate of completion",
   ],
   highlight: false,
 };
