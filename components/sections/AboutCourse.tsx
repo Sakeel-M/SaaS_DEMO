@@ -83,20 +83,6 @@ export default function AboutCourse() {
                 </span>
               </button>
 
-              {/* Bottom info pill */}
-              <div className="absolute left-5 bottom-5 right-5 frosted rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <div className="eyebrow !text-[var(--silver-faint)] mb-1">
-                    YOUR INSTRUCTOR
-                  </div>
-                  <div className="font-display font-bold text-[var(--silver)] truncate">
-                    Dharaneetharan · Social Eagle.AI
-                  </div>
-                </div>
-                <span className="eyebrow !text-[var(--red-glow)] flex-shrink-0">
-                  2:14 PREVIEW
-                </span>
-              </div>
             </div>
           </Reveal>
 
