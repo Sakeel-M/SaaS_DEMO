@@ -103,8 +103,10 @@ export default function AboutCourse() {
                 style={{ fontSize: "clamp(2.25rem, 4.5vw, 4rem)" }}
               >
                 <span className="block text-gradient-silver">Build and ship</span>
-                <span className="block text-gradient-silver">a product</span>
-                <span className="block text-gradient-red">in 2 days.</span>
+                <span className="block">
+                  <span className="text-gradient-silver">a product </span>
+                  <span className="text-gradient-red">in 2 days.</span>
+                </span>
               </h2>
             </Reveal>
 

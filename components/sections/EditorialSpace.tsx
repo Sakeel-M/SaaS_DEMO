@@ -1,15 +1,15 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useMemo } from "react";
 import { ArrowUpRight, GraduationCap, Rocket } from "lucide-react";
-import { useSectionProgress } from "@/components/ui/useSectionProgress";
+import Reveal from "@/components/ui/Reveal";
 
 const STAGES = [
   {
     id: "promise",
     eyebrow: "THE PROMISE",
     title: ["Not just a", "marketplace.", "A loop that pays."],
-    titleAccent: 2, // index of line that gets red gradient (zero-based)
+    titleAccent: 2,
     body:
       "Sandhai isn't a list of apps. It's a closed loop where founders learn, build, ship, and earn week after week, with the AI tools and audience already in the room.",
     cta: null,
@@ -34,80 +34,19 @@ const STAGES = [
 ] as const;
 
 export default function EditorialSpace() {
-  const ref = useRef<HTMLElement>(null);
-  const p = useSectionProgress(ref);
-
   return (
-    <section
-      ref={ref}
-      id="learn"
-      className="relative"
-      style={{ height: `${STAGES.length * 110}vh` }}
-    >
-      <div
-        className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center pad-x"
-        style={{
-          perspective: "1400px",
-          perspectiveOrigin: "50% 50%",
-        }}
-      >
-        {/* Space backdrop */}
-        <SpaceBackdrop progress={p} />
-
-        {/* Stages */}
-        {STAGES.map((stage, i) => {
-          const { opacity, z, blur, active } = computeStage(p, i, STAGES.length);
-          return (
-            <div
-              key={stage.id}
-              className="absolute inset-0 flex items-center justify-center pad-x"
-              style={{
-                opacity,
-                transform: `translate3d(0, 0, ${z}px)`,
-                filter: blur > 0 ? `blur(${blur}px)` : undefined,
-                pointerEvents: active ? "auto" : "none",
-                willChange: "transform, opacity, filter",
-                transformStyle: "preserve-3d",
-                transition: "filter 0.3s ease-out",
-              }}
-            >
-              <Stage {...stage} />
-            </div>
-          );
-        })}
-
-        {/* Stage indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
-          {STAGES.map((_, i) => {
-            const t = (p * STAGES.length) - i;
-            const isActive = t >= 0.15 && t <= 0.95;
-            return (
-              <span
-                key={i}
-                className="rounded-full transition-all duration-500"
-                style={{
-                  width: isActive ? "32px" : "6px",
-                  height: "6px",
-                  background: isActive
-                    ? "var(--red-primary)"
-                    : "rgba(232,228,221,0.3)",
-                }}
-              />
-            );
-          })}
-        </div>
-
-        {/* Hint at first */}
+    <section id="learn" className="relative">
+      {STAGES.map((stage) => (
         <div
-          className="absolute top-24 left-1/2 -translate-x-1/2 eyebrow text-[var(--silver-faint)] z-20"
-          style={{
-            opacity: Math.max(0, 1 - p * 8),
-            transition: "opacity 0.3s",
-          }}
+          key={stage.id}
+          className="relative min-h-screen w-full overflow-hidden flex items-center justify-center pad-x"
         >
-          KEEP SCROLLING
+          <SpaceBackdrop />
+          <Reveal as="up">
+            <Stage {...stage} />
+          </Reveal>
         </div>
-      </div>
+      ))}
     </section>
   );
 }
@@ -126,7 +65,6 @@ function Stage({
   body: string | null;
   cta: "split" | null;
 }) {
-  // Stage 3 (split CTA) gets a tighter heading area to leave room for the cards
   const isSplit = cta === "split";
   return (
     <div className="max-page w-full text-center">
@@ -185,7 +123,6 @@ function SplitCards() {
           className="relative overflow-hidden rounded-3xl p-7 lg:p-9 flex flex-col justify-between border border-white/5"
           style={{ background: bg, minHeight: "330px" }}
         >
-          {/* Decorative concentric SVG */}
           <svg
             className="absolute -bottom-10 -right-10 w-56 h-56 opacity-20"
             viewBox="0 0 200 200"
@@ -235,87 +172,28 @@ function SplitCards() {
   );
 }
 
-/* ─── Stage progress math ──────────────────────────── */
-/**
- * Each stage owns a strict 0..1 slice of the section progress.
- * Within that slice:
- *   0    → 0.18 : approach (zoom + fade in)
- *   0.18 → 0.82 : linger  (full clarity)
- *   0.82 → 1    : recede   (zoom past + fade out)
- * Outside its slice the stage is fully invisible — no overlap with neighbors.
- */
-function computeStage(progress: number, i: number, total: number) {
-  const local = progress * total - i; // -∞ ... 0 ... 1 ... +∞
-
-  if (local <= 0 || local >= 1) {
-    return {
-      opacity: 0,
-      z: local <= 0 ? -1500 : 600,
-      blur: 0,
-      active: false,
-    };
-  }
-
-  let z: number;
-  let opacity: number;
-  let blur: number;
-
-  if (local < 0.18) {
-    // Approach
-    const t = local / 0.18;
-    const eased = easeOutCubic(t);
-    z = -1500 + eased * 1500;
-    opacity = eased;
-    blur = (1 - eased) * 4;
-  } else if (local < 0.82) {
-    // Linger — fully sharp, fully opaque
-    z = 0;
-    opacity = 1;
-    blur = 0;
-  } else {
-    // Recede
-    const t = (local - 0.82) / 0.18;
-    const eased = easeInCubic(t);
-    z = eased * 600;
-    opacity = 1 - eased;
-    blur = eased * 4;
-  }
-
-  const active = opacity > 0.85;
-  return { opacity, z, blur, active };
-}
-
-function easeOutCubic(t: number) {
-  return 1 - Math.pow(1 - t, 3);
-}
-function easeInCubic(t: number) {
-  return t * t * t;
-}
-
 /* ─── Space backdrop ───────────────────────────────── */
-function SpaceBackdrop({ progress }: { progress: number }) {
-  // Generate stars once
+function SpaceBackdrop() {
   const stars = useMemo(
     () =>
-      Array.from({ length: 80 }).map((_, i) => ({
+      Array.from({ length: 60 }).map(() => ({
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: 0.5 + Math.random() * 1.8,
-        depth: Math.random(), // 0..1, how far back
+        depth: Math.random(),
         twinkleDelay: Math.random() * 4,
       })),
     []
   );
 
-  // Backdrop drifts subtly with overall progress
-  const drift = progress * 30;
-
   return (
     <div
       className="absolute inset-0 pointer-events-none"
-      style={{ background: "radial-gradient(ellipse at center, #110608 0%, #050203 70%, #000 100%)" }}
+      style={{
+        background:
+          "radial-gradient(ellipse at center, #110608 0%, #050203 70%, #000 100%)",
+      }}
     >
-      {/* Nebula blobs */}
       <div
         className="absolute"
         style={{
@@ -326,8 +204,6 @@ function SpaceBackdrop({ progress }: { progress: number }) {
           background:
             "radial-gradient(circle, rgba(184,34,44,0.32) 0%, rgba(90,10,18,0.10) 40%, transparent 70%)",
           filter: "blur(60px)",
-          transform: `translate3d(${-drift}px, ${drift * 0.5}px, -800px)`,
-          willChange: "transform",
         }}
       />
       <div
@@ -340,19 +216,10 @@ function SpaceBackdrop({ progress }: { progress: number }) {
           background:
             "radial-gradient(circle, rgba(255,85,96,0.20) 0%, rgba(90,10,18,0.08) 40%, transparent 70%)",
           filter: "blur(60px)",
-          transform: `translate3d(${drift}px, ${-drift * 0.4}px, -1000px)`,
-          willChange: "transform",
         }}
       />
 
-      {/* Starfield */}
-      <div
-        className="absolute inset-0"
-        style={{
-          transform: `translate3d(0, ${-progress * 60}px, -600px)`,
-          willChange: "transform",
-        }}
-      >
+      <div className="absolute inset-0">
         {stars.map((s, i) => (
           <span
             key={i}
@@ -370,7 +237,6 @@ function SpaceBackdrop({ progress }: { progress: number }) {
         ))}
       </div>
 
-      {/* Subtle vignette */}
       <div
         className="absolute inset-0"
         style={{

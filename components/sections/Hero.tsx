@@ -17,7 +17,18 @@ export default function Hero() {
         {/* Top eyebrow — centered */}
         <div className="pt-32 pb-6">
           <div className="max-page text-center">
-            <p className="eyebrow !text-[var(--silver)]">
+            <p
+              className="font-display font-black uppercase inline-block"
+              style={{
+                fontSize: "clamp(1.25rem, 2.4vw, 2.25rem)",
+                letterSpacing: "0.08em",
+                lineHeight: 1,
+                color: "#ffffff",
+                textShadow:
+                  "0 0 24px rgba(255,255,255,0.55), 0 2px 18px rgba(0,0,0,0.55)",
+                filter: "drop-shadow(0 4px 14px rgba(0,0,0,0.6))",
+              }}
+            >
               LEARN. BUILD. SHIP. EARN.
             </p>
           </div>
@@ -58,27 +69,8 @@ export default function Hero() {
         {/* Bottom row: frosted card · spacer · body copy */}
         <div className="pb-16">
           <div className="max-page grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-end">
-            {/* Bottom-left frosted card */}
-            <div className="md:col-span-4">
-              <div className="frosted rounded-2xl p-7 max-w-sm">
-                <p
-                  className="font-display font-bold uppercase text-[var(--silver)] leading-[1.15] tracking-tight"
-                  style={{ fontSize: "0.95rem", letterSpacing: "0.04em" }}
-                >
-                  BUILT BY SOCIAL EAGLE.AI,<br />
-                  THE AI-NATIVE LAUNCH<br />
-                  NETWORK.
-                </p>
-                <div className="h-px w-12 bg-[var(--silver)]/35 my-5" />
-                <p className="text-sm text-[var(--silver-dim)] leading-relaxed">
-                  The marketplace for AI-built SaaS that actually finds its
-                  first thousand customers.
-                </p>
-              </div>
-            </div>
-
-            {/* Spacer (camera focus area) */}
-            <div className="hidden md:block md:col-span-4" />
+            {/* Left spacer (camera focus area) */}
+            <div className="hidden md:block md:col-span-8" />
 
             {/* Bottom-right body */}
             <div className="md:col-span-4 md:text-right">

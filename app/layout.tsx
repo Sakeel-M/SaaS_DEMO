@@ -3,7 +3,6 @@ import { Inter_Tight, Geist_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import TopNav from "@/components/nav/TopNav";
-import SideTag from "@/components/nav/SideTag";
 import AmbientBackdrop from "@/components/ui/AmbientBackdrop";
 
 const display = Inter_Tight({
@@ -74,7 +73,6 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <AmbientBackdrop />
           <TopNav />
-          <SideTag />
           <main className="relative z-10">{children}</main>
         </SmoothScrollProvider>
       </body>

@@ -58,9 +58,10 @@ export default function TopNav() {
     >
       <div className="pad-x">
         <div
-          className="max-page flex items-end justify-between rounded-full transition-all duration-300 py-14 px-5"
+          className="max-page flex items-center justify-between rounded-full transition-all duration-300 px-5"
           style={{
-            paddingBottom: scrolled ? "1.25rem" : "1.5rem",
+            paddingTop: scrolled ? "5rem" : "5.5rem",
+            paddingBottom: scrolled ? "1rem" : "1.25rem",
             background: scrolled ? "#000000" : "transparent",
             border: scrolled
               ? "1px solid rgba(255,255,255,0.06)"
@@ -74,7 +75,6 @@ export default function TopNav() {
             href="#intro"
             className="flex items-center group min-w-0"
             aria-label="SaaS Sandhai home"
-            style={{ marginBottom: "-0.25rem" }}
           >
             <Logo
               height={scrolled ? 26 : 30}
