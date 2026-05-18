@@ -28,7 +28,7 @@ export default function HeroVideoBackdrop() {
   const [reduced, setReduced] = useState(false);
   const [inView, setInView] = useState(true);
 
-  const hasValidId = WISTIA_ID !== "REPLACE_ME" && WISTIA_ID.length > 0;
+  const hasValidId = WISTIA_ID.length > 0;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
