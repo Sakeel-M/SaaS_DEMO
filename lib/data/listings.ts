@@ -10,6 +10,10 @@ export type Listing = {
   reviews: number;
   maker: string;
   cover: string;
+  /** Optional raw image URL (data URL or http). When present, the card
+   *  renders a real <img> sized to its natural aspect so there are no
+   *  letterbox bars. When absent, falls back to the gradient `cover`. */
+  image?: string;
 };
 
 const COVERS = [

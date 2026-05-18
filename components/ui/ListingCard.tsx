@@ -22,12 +22,22 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
           : "bg-white border border-black/5 hover:border-[var(--red-primary)]/40"
       } hover:ring-glow`}
     >
-      {/* Cover — sharp top corners, image fills the area (16:9 matches
-          typical browser screenshot aspect, so contain mode has no bars) */}
+      {/* Cover — sharp top corners. When the listing has an image URL we
+          render a real <img> so the card auto-sizes to the image's natural
+          aspect (no letterbox bars). When there's no image, fall back to
+          the gradient cover at a 16:9 aspect for layout stability. */}
       <div
-        className="aspect-[16/9] w-full relative overflow-hidden"
-        style={{ background: listing.cover }}
+        className={`w-full relative overflow-hidden ${listing.image ? "" : "aspect-[16/9]"}`}
+        style={{ background: listing.image ? undefined : listing.cover }}
       >
+        {listing.image && (
+          <img
+            src={listing.image}
+            alt={listing.name}
+            className="block w-full h-auto"
+            loading="lazy"
+          />
+        )}
         <div className="absolute inset-0 red-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Decorative SVG mark */}

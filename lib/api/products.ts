@@ -56,6 +56,7 @@ function mapProduct(p: RawProduct, i: number): Listing {
     reviews: typeof p.review_count === "number" ? p.review_count : 0,
     maker: p.maker ?? "",
     cover,
+    image: p.image ?? undefined,
   };
 }
 
