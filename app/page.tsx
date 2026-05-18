@@ -6,7 +6,7 @@ import TopDeals from "@/components/sections/TopDeals";
 import HowItWorks from "@/components/sections/HowItWorks";
 import FeaturesGrid from "@/components/sections/FeaturesGrid";
 import Pricing from "@/components/sections/Pricing";
-import Testimonials from "@/components/sections/Testimonials";
+// import Testimonials from "@/components/sections/Testimonials";  // hidden temporarily
 import FAQ from "@/components/sections/FAQ";
 import FooterCTA from "@/components/sections/FooterCTA";
 
@@ -21,7 +21,7 @@ export default function HomePage() {
       <HowItWorks />
       <FeaturesGrid />
       <Pricing />
-      <Testimonials />
+      {/* <Testimonials /> hidden temporarily */}
       <FAQ />
       <FooterCTA />
     </>

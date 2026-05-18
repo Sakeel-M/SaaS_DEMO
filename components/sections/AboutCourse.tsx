@@ -66,10 +66,13 @@ export default function AboutCourse() {
                 priority={false}
               />
 
-              {/* Centered play button */}
-              <button
+              {/* Centered play button — opens the course app */}
+              <a
+                href="https://app.saassandhai.com/course"
+                target="_blank"
+                rel="noopener"
                 className="absolute inset-0 grid place-items-center group"
-                aria-label="Watch course preview"
+                aria-label="Open the course"
               >
                 <span
                   className="size-20 rounded-full grid place-items-center transition-transform group-hover:scale-110"
@@ -81,8 +84,33 @@ export default function AboutCourse() {
                 >
                   <Play className="size-7 text-ink fill-ink translate-x-0.5" />
                 </span>
-              </button>
+              </a>
 
+              {/* Title overlay (bottom-left) */}
+              <div
+                className="absolute inset-x-0 bottom-0 pointer-events-none p-6 lg:p-8"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 55%, transparent 100%)",
+                }}
+              >
+                <p
+                  className="eyebrow mb-2"
+                  style={{ color: "rgba(255,255,255,0.7)" }}
+                >
+                  TAMIL
+                </p>
+                <h3
+                  className="font-display font-black tracking-tightest text-[var(--silver)]"
+                  style={{
+                    fontSize: "clamp(1.35rem, 2.4vw, 2rem)",
+                    lineHeight: 1.05,
+                    textShadow: "0 2px 18px rgba(0,0,0,0.65)",
+                  }}
+                >
+                  Master the Claude Code
+                </h3>
+              </div>
             </div>
           </Reveal>
 
@@ -150,7 +178,7 @@ export default function AboutCourse() {
               <div className="flex flex-wrap items-end gap-x-10 gap-y-5">
                 <div>
                   <div className="eyebrow !text-[var(--silver-faint)] mb-3">
-                    ONE-TIME · LIFETIME ACCESS
+                    PER YEAR · FULL ACCESS
                   </div>
                   <div className="flex items-baseline gap-3">
                     <span
@@ -168,7 +196,9 @@ export default function AboutCourse() {
                   </div>
                 </div>
                 <a
-                  href="#contact"
+                  href="https://app.saassandhai.com/marketplace"
+                  target="_blank"
+                  rel="noopener"
                   className="eyebrow inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[var(--red-primary)] text-[var(--silver)] hover:bg-[var(--silver)] hover:text-ink transition-colors"
                   style={{
                     boxShadow: "0 12px 32px -8px rgba(184,34,44,0.55)",

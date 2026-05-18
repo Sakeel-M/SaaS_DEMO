@@ -2,18 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const VIDEO_SRC =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4";
+/**
+ * Wistia hashed media ID for the Hero background video.
+ * Replace this with the 10-char ID from the public Wistia share URL
+ * (e.g. https://socialeagle.wistia.com/medias/abc12def34 → "abc12def34").
+ */
+const WISTIA_ID = "bybznyq52z";
+
+const wistiaSrc = (id: string) =>
+  `https://fast.wistia.net/embed/iframe/${id}?autoPlay=true&muted=true&loop=true&playButton=false&controlsVisibleOnLoad=false&fullscreenButton=false&playbar=false&volumeControl=false&settingsControl=false&endVideoBehavior=loop&playerColor=000000&silentAutoPlay=allow`;
 
 /**
- * Looping video background with mouse-driven 3D parallax.
- * - Aggressive readiness handling so the video shows even on flaky autoplay policies.
- * - Pauses when scrolled offscreen (perf).
- * - Honors prefers-reduced-motion.
+ * Looping Wistia background with mouse-driven 3D parallax.
+ * Falls back to a cinematic gradient if the embed fails or the ID is missing.
  */
 export default function HeroVideoBackdrop() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
 
   const target = useRef({ x: 0, y: 0 });
@@ -21,8 +26,9 @@ export default function HeroVideoBackdrop() {
   const rafId = useRef(0);
 
   const [reduced, setReduced] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [errored, setErrored] = useState(false);
+  const [inView, setInView] = useState(true);
+
+  const hasValidId = WISTIA_ID !== "REPLACE_ME" && WISTIA_ID.length > 0;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -30,43 +36,6 @@ export default function HeroVideoBackdrop() {
     const onMq = () => setReduced(mq.matches);
     mq.addEventListener("change", onMq);
     return () => mq.removeEventListener("change", onMq);
-  }, []);
-
-  // Force-attempt playback on mount + on first user interaction
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-
-    // Kick the network fetch & decode pipeline as early as possible.
-    try {
-      v.load();
-    } catch {/* noop */}
-
-    const tryPlay = () => {
-      const p = v.play();
-      if (p && typeof p.catch === "function") {
-        p.catch(() => {/* autoplay rejected; will retry on user gesture */});
-      }
-    };
-
-    tryPlay();
-
-    // Some browsers reject autoplay until first user gesture — recover from that
-    const onGesture = () => {
-      tryPlay();
-      window.removeEventListener("pointerdown", onGesture);
-      window.removeEventListener("keydown", onGesture);
-      window.removeEventListener("touchstart", onGesture);
-    };
-    window.addEventListener("pointerdown", onGesture, { passive: true });
-    window.addEventListener("keydown", onGesture);
-    window.addEventListener("touchstart", onGesture, { passive: true });
-
-    return () => {
-      window.removeEventListener("pointerdown", onGesture);
-      window.removeEventListener("keydown", onGesture);
-      window.removeEventListener("touchstart", onGesture);
-    };
   }, []);
 
   // Mouse parallax — rAF lerp loop
@@ -105,23 +74,14 @@ export default function HeroVideoBackdrop() {
     };
   }, [reduced]);
 
-  // Pause video when offscreen
+  // Hide iframe when offscreen so Wistia stops decoding
   useEffect(() => {
-    const v = videoRef.current;
     const c = containerRef.current;
-    if (!v || !c) return;
-
+    if (!c) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
-        if (entry.isIntersecting) {
-          const p = v.play();
-          if (p && typeof p.catch === "function") {
-            p.catch(() => {/* autoplay block — user gesture handler will retry */});
-          }
-        } else {
-          v.pause();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.05 }
     );
@@ -140,49 +100,39 @@ export default function HeroVideoBackdrop() {
         className="absolute inset-0 will-change-transform"
         style={{ transformOrigin: "50% 50%" }}
       >
-        <video
-          ref={videoRef}
-          src={VIDEO_SRC}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          crossOrigin="anonymous"
-          // @ts-expect-error fetchPriority is valid HTML5 but not yet typed in React 19
-          fetchpriority="high"
-          onLoadedMetadata={() => setLoaded(true)}
-          onLoadedData={() => setLoaded(true)}
-          onCanPlay={() => setLoaded(true)}
-          onPlaying={() => setLoaded(true)}
-          onError={() => setErrored(true)}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: "brightness(1.35) saturate(1.15) contrast(1.05)" }}
-        />
-
-        {/* Cinematic fallback that mirrors the video's color palette so the
-            transition into the first frame is barely noticeable. */}
-        {!loaded && !errored && (
-          <div
-            className="absolute inset-0 pointer-events-none"
+        {hasValidId && (
+          <iframe
+            ref={iframeRef}
+            src={wistiaSrc(WISTIA_ID)}
+            title="Hero background"
+            allow="autoplay; fullscreen"
+            allowFullScreen
+            className="absolute top-1/2 left-1/2"
             style={{
-              background:
-                "radial-gradient(ellipse at 50% 60%, #4a1a14 0%, #2a0d10 40%, #100608 70%, #050203 100%)",
+              border: 0,
+              filter: "brightness(1.35) saturate(1.15) contrast(1.05)",
+              display: inView ? "block" : "none",
+              // 16:9 cover: pick the larger of (viewport, viewport-derived-aspect)
+              // so the iframe always overflows in at least one axis, then center it.
+              width: "max(100%, calc(100vh * 16 / 9))",
+              height: "max(100%, calc(100vw * 9 / 16))",
+              transform: "translate(-50%, -50%)",
             }}
           />
         )}
-      </div>
 
-      {/* If the video errors completely, show a tasteful gradient instead */}
-      {errored && (
+        {/* Cinematic fallback that mirrors the video's color palette. Shown
+            when the Wistia ID hasn't been set yet, or behind the iframe while
+            it loads (Wistia's iframe is transparent until ready). */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
+            zIndex: hasValidId ? -1 : 1,
             background:
-              "radial-gradient(60% 50% at 50% 60%, rgba(184,34,44,0.35) 0%, #1a0508 70%, #0a0708 100%)",
+              "radial-gradient(ellipse at 50% 60%, #4a1a14 0%, #2a0d10 40%, #100608 70%, #050203 100%)",
           }}
         />
-      )}
+      </div>
     </div>
   );
 }

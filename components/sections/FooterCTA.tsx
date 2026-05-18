@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import Logo from "@/components/ui/Logo";
 import Reveal from "@/components/ui/Reveal";
 
 export default function FooterCTA() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-
   return (
     <footer
+      id="contact"
       className="relative overflow-hidden pad-x pt-32 pb-12"
       style={{
         background:
@@ -49,80 +45,33 @@ export default function FooterCTA() {
               JOIN THE <br /> SANDHAI.
             </h2>
           </Reveal>
-          <Reveal as="up" delay={240}>
-            <p className="mx-auto max-w-xl text-white body-lg">
-              Be the first to know when new cohorts open and weekly deals
-              drop. No spam. Just signal.
-            </p>
-          </Reveal>
         </div>
 
-        <Reveal as="up" delay={340} className="mt-14 max-w-2xl mx-auto">
-          <form
-            className="w-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-            setEmail("");
-            setTimeout(() => setSent(false), 3000);
-          }}
-        >
-          <div className="frosted rounded-full p-2 flex flex-col sm:flex-row items-stretch gap-2">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@buildingthefuture.com"
-              className="flex-1 bg-transparent px-6 py-3.5 text-white placeholder-white/70 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="eyebrow !text-ink px-7 py-3.5 rounded-full bg-[var(--silver)] hover:bg-[var(--bg-void)] hover:!text-[var(--silver)] transition-colors inline-flex items-center justify-center gap-2"
-            >
-              {sent ? "WE'LL EMAIL YOU" : "NOTIFY ME"}
-              <ArrowUpRight className="size-4" />
-            </button>
-          </div>
-          </form>
+        <Reveal as="up" delay={340} className="mt-14 flex justify-center">
+          <a
+            href="https://app.saassandhai.com/marketplace"
+            target="_blank"
+            rel="noopener"
+            className="eyebrow inline-flex items-center gap-2 px-10 py-5 rounded-full bg-[var(--silver)] text-ink hover:bg-[var(--bg-void)] hover:!text-[var(--silver)] transition-colors"
+            style={{
+              boxShadow: "0 18px 40px -12px rgba(0,0,0,0.45)",
+              fontSize: "0.95rem",
+            }}
+          >
+            GET STARTED
+            <ArrowUpRight className="size-4" />
+          </a>
         </Reveal>
 
-        <div className="mt-28 grid grid-cols-2 md:grid-cols-4 gap-8 pb-12">
-          {[
-            { h: "PLATFORM", l: ["Marketplace", "Course", "For Makers", "For Learners"] },
-            { h: "RESOURCES", l: ["Blog", "Playbooks", "Changelog", "Status"] },
-            { h: "COMPANY", l: ["About", "Careers", "Press", "Contact"] },
-            { h: "LEGAL", l: ["Privacy", "Terms", "Cookies", "DPA"] },
-          ].map((col, i) => (
-            <Reveal key={col.h} as="up" index={i} delay={120}>
-              <div className="eyebrow !text-white mb-4">{col.h}</div>
-              <ul className="space-y-2 text-white">
-                {col.l.map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:underline">
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </div>
-
-        <div className="pt-8 border-t border-white/30 flex flex-wrap items-center justify-between gap-6 text-white/90 text-sm">
+        <div className="mt-24 pt-8 border-t border-white/30 flex flex-wrap items-center justify-between gap-6 text-white/90 text-sm">
           <div className="flex items-center gap-4">
-            <div className="bg-white rounded-lg px-3 py-2 inline-flex">
-              <Logo height={28} />
-            </div>
-            <span className="hidden sm:inline">
+            <span>
               © 2026 Social Eagle.AI &nbsp;·&nbsp; All rights reserved.
             </span>
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-[var(--silver)]">Twitter</a>
-            <a href="#" className="hover:text-[var(--silver)]">YouTube</a>
-            <a href="#" className="hover:text-[var(--silver)]">Instagram</a>
-            <a href="#" className="hover:text-[var(--silver)]">Discord</a>
+            <a href="/privacy" className="hover:text-[var(--silver)]">Privacy</a>
+            <a href="/terms" className="hover:text-[var(--silver)]">Terms &amp; Conditions</a>
           </div>
         </div>
       </div>

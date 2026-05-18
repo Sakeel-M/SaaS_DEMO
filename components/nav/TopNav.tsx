@@ -1,10 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import Logo from "@/components/ui/Logo";
 
 const NAV_ITEMS = [
-  { id: "intro", label: "Intro" },
   { id: "deals", label: "Deals" },
   { id: "learn", label: "Learn" },
   { id: "build", label: "Build" },
@@ -13,7 +12,7 @@ const NAV_ITEMS = [
 ];
 
 export default function TopNav() {
-  const [active, setActive] = useState("intro");
+  const [active, setActive] = useState("deals");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -76,10 +75,14 @@ export default function TopNav() {
             className="flex items-center group min-w-0"
             aria-label="SaaS Sandhai home"
           >
-            <Logo
-              height={scrolled ? 26 : 30}
+            <Image
+              src="/saas-sandhai-logo.png"
+              alt="SaaS Sandhai"
+              width={scrolled ? 130 : 150}
+              height={scrolled ? 36 : 42}
               priority
-              className="logo-on-black"
+              className="transition-all duration-300 h-auto w-auto"
+              style={{ maxHeight: scrolled ? "36px" : "44px" }}
             />
           </a>
 
@@ -94,7 +97,7 @@ export default function TopNav() {
                     : "text-white/80 hover:text-white"
                 }`}
                 style={{
-                  fontFamily: "var(--font-serif), Georgia, serif",
+                  fontFamily: "var(--font-serif), system-ui, sans-serif",
                   fontSize: "1rem",
                   fontWeight: 500,
                   letterSpacing: "0.01em",
@@ -107,10 +110,12 @@ export default function TopNav() {
           </nav>
 
           <a
-            href="#contact"
-            className="hidden md:inline-flex px-5 py-2 rounded-full transition-colors text-[#3a2410] hover:brightness-95"
+            href="https://app.saassandhai.com/marketplace"
+            target="_blank"
+            rel="noopener"
+            className="hidden md:inline-flex px-5 py-2 rounded-full transition-colors text-[#3a2410] hover:brightness-95 mr-4 lg:mr-8"
             style={{
-              fontFamily: "var(--font-serif), Georgia, serif",
+              fontFamily: "var(--font-serif), system-ui, sans-serif",
               fontSize: "0.9rem",
               fontWeight: 600,
               letterSpacing: "0.02em",

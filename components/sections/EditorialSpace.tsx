@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, GraduationCap, Rocket } from "lucide-react";
-import Reveal from "@/components/ui/Reveal";
 
 const STAGES = [
   {
@@ -33,20 +32,137 @@ const STAGES = [
   },
 ] as const;
 
+/* ─── One-viewport 3D fly-through ──────────────────────
+ * Outer section is tall (300vh) to provide scroll distance.
+ * Inner sticky pin shows a single viewport with all three stages stacked,
+ * each at a different depth. Scroll progress drives translateZ + opacity +
+ * blur per stage so the "camera" flies forward through space:
+ *   stage 1 emerges from depth → centers → flies past
+ *   stage 2 emerges from depth → centers → flies past
+ *   stage 3 emerges from depth → centers → flies past
+ * Page scroll never stops; the visual reads as continuous forward motion.
+ */
 export default function EditorialSpace() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const stageRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const sec = sectionRef.current;
+    if (!sec) return;
+
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduced) {
+      stageRefs.current.forEach((el, i) => {
+        if (!el) return;
+        el.style.transform = "translate3d(0,0,0)";
+        el.style.opacity = i === 0 ? "1" : "0";
+        el.style.filter = "";
+      });
+      return;
+    }
+
+    let raf = 0;
+    let active = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry) active = entry.isIntersecting;
+      },
+      { threshold: [0, 0.05, 0.5, 1] }
+    );
+    observer.observe(sec);
+
+    const N = STAGES.length;
+    // Centers at progress 0, 0.5, 1 with non-overlapping slots of half-width 0.5
+    // in t-space. Each stage holds a plateau at |t|<PLATEAU, then ramps to 0
+    // by |t|=SLOT_HALF. Adjacent stages cannot both be visible at the same
+    // time — there's a brief dark beat at slot boundaries that reads as the
+    // camera passing between stages in deep space.
+    const PLATEAU = 0.18;
+    const SLOT_HALF = 0.5;
+    const Z_RANGE = 1100;
+    const tick = () => {
+      if (active) {
+        const rect = sec.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const total = Math.max(1, rect.height - vh);
+        const scrolled = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolled / total));
+
+        for (let i = 0; i < N; i++) {
+          const center = i / (N - 1); // 0, 0.5, 1
+          const t = (progress - center) * (N - 1);
+          const absT = Math.abs(t);
+
+          let opacity: number;
+          if (absT >= SLOT_HALF) opacity = 0;
+          else if (absT <= PLATEAU) opacity = 1;
+          else opacity = (SLOT_HALF - absT) / (SLOT_HALF - PLATEAU);
+
+          const tClamped = Math.max(-SLOT_HALF, Math.min(SLOT_HALF, t));
+          const z = (tClamped / SLOT_HALF) * Z_RANGE;
+
+          const el = stageRefs.current[i];
+          if (el) {
+            el.style.transform = `translate3d(0, 0, ${z}px)`;
+            el.style.opacity = `${opacity}`;
+            el.style.filter = "";
+          }
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <section id="learn" className="relative">
-      {STAGES.map((stage) => (
-        <div
-          key={stage.id}
-          className="relative min-h-screen w-full overflow-hidden flex items-center justify-center pad-x"
-        >
-          <SpaceBackdrop />
-          <Reveal as="up">
-            <Stage {...stage} />
-          </Reveal>
-        </div>
-      ))}
+    <section
+      ref={sectionRef}
+      className="relative"
+      style={{
+        minHeight: "300vh",
+        background:
+          "radial-gradient(ellipse at center, #110608 0%, #050203 70%, #000 100%)",
+      }}
+    >
+      <div
+        className="sticky top-0 h-screen w-full overflow-hidden"
+        style={{ perspective: "1400px", perspectiveOrigin: "50% 45%" }}
+      >
+        <SpaceBackdrop />
+
+        {STAGES.map((stage, i) => (
+          <div
+            key={stage.id}
+            className="absolute inset-0 flex items-center justify-center pad-x"
+          >
+            <div
+              ref={(el) => {
+                stageRefs.current[i] = el;
+              }}
+              className="w-full"
+              style={{
+                willChange: "transform, opacity, filter",
+                transformStyle: "preserve-3d",
+                transform:
+                  i === 0
+                    ? "translate3d(0, 0, 0px)"
+                    : "translate3d(0, 0, -1100px)",
+                opacity: i === 0 ? 1 : 0,
+              }}
+            >
+              <Stage {...stage} />
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -163,9 +279,14 @@ function SplitCards() {
             </p>
           </div>
 
-          <button className="relative mt-5 inline-flex items-center gap-2 self-start eyebrow px-5 py-3 rounded-full bg-[var(--silver)] text-ink hover:bg-ink hover:text-[var(--silver)] transition-colors">
+          <a
+            href="https://app.saassandhai.com/marketplace"
+            target="_blank"
+            rel="noopener"
+            className="relative mt-5 inline-flex items-center gap-2 self-start eyebrow px-5 py-3 rounded-full bg-[var(--silver)] text-ink hover:bg-ink hover:text-[var(--silver)] transition-colors"
+          >
             {cta} <ArrowUpRight className="size-4" />
-          </button>
+          </a>
         </div>
       ))}
     </div>
@@ -173,27 +294,33 @@ function SplitCards() {
 }
 
 /* ─── Space backdrop ───────────────────────────────── */
+/* Stars are generated client-side only (Math.random in render breaks SSR
+   hydration). Server renders no stars; client populates on mount. */
+type Star = {
+  x: number;
+  y: number;
+  size: number;
+  depth: number;
+  twinkleDelay: number;
+};
+
 function SpaceBackdrop() {
-  const stars = useMemo(
-    () =>
+  const [stars, setStars] = useState<Star[]>([]);
+
+  useEffect(() => {
+    setStars(
       Array.from({ length: 60 }).map(() => ({
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: 0.5 + Math.random() * 1.8,
         depth: Math.random(),
         twinkleDelay: Math.random() * 4,
-      })),
-    []
-  );
+      }))
+    );
+  }, []);
 
   return (
-    <div
-      className="absolute inset-0 pointer-events-none"
-      style={{
-        background:
-          "radial-gradient(ellipse at center, #110608 0%, #050203 70%, #000 100%)",
-      }}
-    >
+    <div className="absolute inset-0 pointer-events-none">
       <div
         className="absolute"
         style={{

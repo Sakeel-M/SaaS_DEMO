@@ -4,9 +4,9 @@ import Reveal from "@/components/ui/Reveal";
 
 const TILES = [
   {
-    headline: ["AVERAGE", "TIME TO", "FIRST SALE"],
-    body: "Listings that go live on Sandhai see their first paying customer within 72 hours, on average.",
-    badge: "72H",
+    headline: ["SHIP A", "PRODUCT", "IN 2 DAYS"],
+    body: "Our hands-on Tamil course gets you from blank screen to shipped SaaS in a single weekend. No boilerplate, no theory dumps.",
+    badge: "2D",
     variant: "highlight",
   },
   {
@@ -16,9 +16,9 @@ const TILES = [
     variant: "default",
   },
   {
-    headline: ["AVERAGE", "MAKER", "EARNINGS"],
-    body: "Top-decile makers cross $5K/mo within their first quarter. The median crosses $800/mo.",
-    badge: "$5K",
+    headline: ["TOP MAKER", "REVENUE", "PER MONTH"],
+    body: "Top makers cross ₹40K/mo within their first quarter on Sandhai. The median maker crosses ₹6K/mo.",
+    badge: "₹40K",
     variant: "default",
   },
 ] as const;

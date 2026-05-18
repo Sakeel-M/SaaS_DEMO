@@ -34,37 +34,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Massive left-aligned wordmark — SAAS (small) over SANDHAI (large) */}
-        <div className="flex-1 flex items-center max-page w-full">
-          <h1
-            className="!text-[var(--silver)] leading-[0.82]"
-            style={{
-              fontWeight: 900,
-              letterSpacing: "-0.05em",
-              textShadow: "0 30px 80px rgba(0,0,0,0.55)",
-            }}
-          >
-            <span
-              className="block"
-              style={{
-                fontSize: "clamp(1.6rem, 4.5vw, 4.5rem)",
-                letterSpacing: "-0.03em",
-                marginBottom: "0.1em",
-              }}
-            >
-              SaaS
-            </span>
-            <span
-              className="block"
-              style={{
-                fontSize: "clamp(2.75rem, 9.5vw, 10rem)",
-                letterSpacing: "-0.05em",
-              }}
-            >
-              SANDHAI
-            </span>
-          </h1>
-        </div>
+        <div className="flex-1" />
 
         {/* Bottom row: frosted card · spacer · body copy */}
         <div className="pb-16">

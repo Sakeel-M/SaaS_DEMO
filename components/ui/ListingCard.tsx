@@ -16,13 +16,13 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-3xl transition-all duration-500 hover:-translate-y-1.5 ${
+      className={`group relative overflow-hidden rounded-b-3xl transition-all duration-500 hover:-translate-y-1.5 ${
         isDark
           ? "bg-[var(--bg-deep)] border border-white/5 hover:border-[var(--red-primary)]/60"
           : "bg-white border border-black/5 hover:border-[var(--red-primary)]/40"
       } hover:ring-glow`}
     >
-      {/* Cover */}
+      {/* Cover — sharp top corners, image fills the area */}
       <div
         className="aspect-[16/10] w-full relative overflow-hidden"
         style={{ background: listing.cover }}
@@ -43,20 +43,6 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
           </defs>
           <rect width="100" height="100" fill={`url(#p-${listing.id})`} />
         </svg>
-
-        {/* Floating initial */}
-        <div className="absolute inset-0 grid place-items-center">
-          <span
-            className="font-display font-black select-none text-gradient-silver"
-            style={{
-              fontSize: "clamp(3rem,7vw,5.5rem)",
-              letterSpacing: "-0.06em",
-              lineHeight: 1,
-            }}
-          >
-            {listing.name[0]}
-          </span>
-        </div>
 
         {/* Badges */}
         {listing.badge && (
@@ -98,13 +84,16 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
               className={`font-display font-bold tracking-tight ${isDark ? "text-[var(--silver)]" : "text-ink"}`}
               style={{ fontSize: "1.5rem", lineHeight: 1 }}
             >
-              ${listing.price}
+              ₹{listing.price.toLocaleString("en-IN")}
             </span>
             <span className={`ml-2 text-sm line-through ${isDark ? "text-[var(--silver-faint)]" : "text-ink/40"}`}>
-              ${listing.originalPrice}
+              ₹{listing.originalPrice.toLocaleString("en-IN")}
             </span>
           </div>
-          <button
+          <a
+            href="https://app.saassandhai.com/marketplace"
+            target="_blank"
+            rel="noopener"
             aria-label={`Get ${listing.name} deal`}
             className={`size-11 rounded-full grid place-items-center transition-all ${
               isDark
@@ -113,7 +102,7 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
             } group-hover:rotate-45`}
           >
             <ArrowUpRight className="size-5" />
-          </button>
+          </a>
         </div>
       </div>
     </article>
