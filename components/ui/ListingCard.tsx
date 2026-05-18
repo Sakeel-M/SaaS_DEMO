@@ -22,9 +22,10 @@ export default function ListingCard({ listing, variant = "light" }: Props) {
           : "bg-white border border-black/5 hover:border-[var(--red-primary)]/40"
       } hover:ring-glow`}
     >
-      {/* Cover — sharp top corners, image fills the area */}
+      {/* Cover — sharp top corners, image fills the area (16:9 matches
+          typical browser screenshot aspect, so contain mode has no bars) */}
       <div
-        className="aspect-[16/10] w-full relative overflow-hidden"
+        className="aspect-[16/9] w-full relative overflow-hidden"
         style={{ background: listing.cover }}
       >
         <div className="absolute inset-0 red-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
