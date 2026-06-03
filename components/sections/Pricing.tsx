@@ -21,10 +21,11 @@ const COURSE = {
 const MARKETPLACE = {
   name: "List in SaaS Sandhai",
   badge: "FOR MAKERS",
-  price: "₹499",
-  cadence: "+ GST · per year",
+  price: "Free",
+  cadence: "Forever",
   cta: "LIST YOUR APP",
   features: [
+    "Free to list. Forever.",
     "Featured rotation in New Releases",
     "Built-in launch loop & PR push",
     "Buyer reviews & analytics",
